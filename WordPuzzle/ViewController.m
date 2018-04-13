@@ -38,6 +38,8 @@
     [self.gameView setDelegate:self];
 
     NSLog(@"after");
+    
+//    UITapGestureRecognizer *tapGestureRecognizer = [UITapGestureRecognizer alloc] initWithTarget:<#(nullable id)#> action:<#(nullable SEL)#>
 
     
 }

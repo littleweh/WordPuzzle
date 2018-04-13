@@ -30,7 +30,7 @@
     self.puzzleModel = [self.delegate modelForWordPuzzleView:self];
     NSUInteger rowNum = self.puzzleModel.count;
     [self drawTableCellWithRowNumber:rowNum];
-    [self drawWords];
+    [self drawWordsWithRowNumber:rowNum];
 
 }
 
@@ -56,34 +56,31 @@
 
 }
 
--(void) drawWords {
+-(void) drawWordsWithRowNumber: (NSUInteger) number {
+    CGSize cellSize = CGSizeMake(self.tableLength / number, self.tableLength / number);
+    double fontSize = cellSize.width * 0.6;
+    
     NSMutableParagraphStyle *paragraphStyle = NSMutableParagraphStyle.new;
     paragraphStyle.alignment = NSTextAlignmentCenter;
     NSDictionary *attributes = @{
-                                 NSFontAttributeName: [UIFont fontWithName:@"Helvetica" size:35],
+                                 NSFontAttributeName: [UIFont fontWithName:@"Helvetica" size:fontSize],
                                  NSStrokeWidthAttributeName: @(0),
                                  NSStrokeColorAttributeName: [UIColor blackColor],
                                  NSParagraphStyleAttributeName: paragraphStyle
                                  
                                  };
 
-    for (int i = 0; i <self.puzzleModel.count; i++) {
-        NSMutableArray *wordsInRow = self.puzzleModel[i];
-        for (int j = 0; j <wordsInRow.count; j++) {
+    for (int i = 0; i < number; i++) {
+        for (int j = 0; j < number; j++) {
             NSString *myString = [[NSString alloc] initWithFormat:@"%@", self.puzzleModel[i][j]];
             NSAttributedString *word = [[NSAttributedString alloc]initWithString:myString attributes:attributes];
-            [word drawInRect:CGRectMake(self.tableOrigin.x + self.tableLength * j / self.puzzleModel.count,
-                                        self.tableOrigin.y + self.tableLength * i / wordsInRow.count,
-                                        self.tableLength / self.puzzleModel.count,
-                                        self.tableLength / wordsInRow.count)];
+            [word drawInRect:CGRectMake(self.tableOrigin.x + j * (self.tableLength / number),
+                                        self.tableOrigin.y + i * (self.tableLength / number) + (cellSize.height - fontSize) * 0.4,
+                                        cellSize.width,
+                                        cellSize.height)];
         }
     }
-//    NSString *first = [[NSString alloc]initWithFormat:@"%@", self.puzzleModel[0][0]];
-//    NSAttributedString* firstWord = [[NSAttributedString alloc] initWithString:first attributes:attributes];
-//    CGRect rect = CGRectMake(self.tableOrigin.x, self.tableOrigin.y, 100, 100);
-//
-////    [firstWord drawAtPoint:self.tableOrigin];
-//    [firstWord drawInRect:rect];
+
 }
 
 
