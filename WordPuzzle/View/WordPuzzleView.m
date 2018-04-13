@@ -15,6 +15,11 @@
 
 @implementation WordPuzzleView
 
+-(void)layoutSubviews {
+    [super layoutSubviews];
+    [self setNeedsDisplay];
+}
+
 
 - (void)drawRect:(CGRect)rect {
     CGFloat padding = 2.0;
@@ -27,12 +32,14 @@
 }
 
 -(void) drawTableCellWithRowNumber: (NSUInteger) number AndPadding: (CGFloat) padding  {
+    CGPoint tableOrigin = CGPointMake((self.frame.size.width - self.tableLength) / 2, (self.frame.size.height - self.tableLength) / 2);
+
     UIBezierPath *rowPath = [UIBezierPath bezierPath];
     for (int i = 0; i <= number; i++) {
-        [rowPath moveToPoint:CGPointMake(0, self.tableLength * i / number + padding)];
-        [rowPath addLineToPoint:CGPointMake(self.tableLength, self.tableLength * i / number + padding)];
-        [rowPath moveToPoint:CGPointMake(self.tableLength * i / number + padding, 0)];
-        [rowPath addLineToPoint:CGPointMake(self.tableLength * i / number  + padding, self.tableLength)];
+        [rowPath moveToPoint:CGPointMake(tableOrigin.x, tableOrigin.y + self.tableLength * i / number)];
+        [rowPath addLineToPoint:CGPointMake(tableOrigin.x + self.tableLength, tableOrigin.y + self.tableLength * i / number)];
+        [rowPath moveToPoint:CGPointMake(tableOrigin .x + self.tableLength * i / number, tableOrigin.y)];
+        [rowPath addLineToPoint:CGPointMake(tableOrigin.x + self.tableLength * i / number, tableOrigin.y + self.tableLength)];
     }
     [rowPath closePath];
     rowPath.lineWidth = 1.0;

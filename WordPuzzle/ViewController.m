@@ -31,12 +31,76 @@
     }
     self.words2DArray = [self setWords2DArrayWithSquareLength:self.wordBoxSize Words:numbers];
     [self showWords2DArrayContent];
-    
-    self.gameView = [[WordPuzzleView alloc] initWithFrame:CGRectMake(50, 50 , 300, 400)];
-    self.gameView.backgroundColor = [UIColor whiteColor];
+
+    self.gameView = [[WordPuzzleView alloc] initWithFrame:CGRectMake(50, 50, 200, 300)];
+    self.gameView.backgroundColor = [UIColor clearColor];
     [self.view addSubview:self.gameView];
+  [self setupGameView];
+
+    NSLog(@"after");
 
     
+}
+
+-(void) setupGameView {
+    self.gameView.translatesAutoresizingMaskIntoConstraints = NO;
+
+    NSLayoutConstraint *centerX = [NSLayoutConstraint constraintWithItem:self.gameView
+                                                               attribute:NSLayoutAttributeCenterX
+                                                               relatedBy:NSLayoutRelationEqual
+                                                                  toItem:self.view
+                                                               attribute:NSLayoutAttributeCenterX
+                                                              multiplier:1.0
+                                                                constant:0.0];
+
+    NSLayoutConstraint *centerY = [NSLayoutConstraint constraintWithItem:self.gameView
+                                                               attribute:NSLayoutAttributeCenterY
+                                                               relatedBy:NSLayoutRelationEqual
+                                                                  toItem:self.view
+                                                               attribute:NSLayoutAttributeCenterY
+                                                              multiplier:1.0
+                                                                constant:0.0];
+     NSLayoutConstraint *leading = [NSLayoutConstraint constraintWithItem:self.gameView
+                                                               attribute:NSLayoutAttributeLeading
+                                                               relatedBy:NSLayoutRelationGreaterThanOrEqual
+                                                                  toItem:self.view.layoutMarginsGuide
+                                                               attribute:NSLayoutAttributeLeading
+                                                              multiplier:1.0
+                                                                constant:10.0];
+
+    NSLayoutConstraint *trailing = [NSLayoutConstraint constraintWithItem:self.gameView
+                                                               attribute:NSLayoutAttributeTrailing
+                                                               relatedBy:NSLayoutRelationGreaterThanOrEqual
+                                                                  toItem:self.view.layoutMarginsGuide
+                                                               attribute:NSLayoutAttributeTrailing
+                                                              multiplier:1.0
+                                                                constant:-10.0];
+
+    NSLayoutConstraint *top = [NSLayoutConstraint constraintWithItem:self.gameView
+                                                               attribute:NSLayoutAttributeTop
+                                                               relatedBy:NSLayoutRelationGreaterThanOrEqual
+                                                                  toItem:self.view.layoutMarginsGuide
+                                                               attribute:NSLayoutAttributeTop
+                                                              multiplier:1.0
+                                                                constant:10.0];
+
+    NSLayoutConstraint *bottom = [NSLayoutConstraint constraintWithItem:self.gameView
+                                                           attribute:NSLayoutAttributeBottom
+                                                           relatedBy:NSLayoutRelationGreaterThanOrEqual
+                                                              toItem:self.view.layoutMarginsGuide
+                                                           attribute:NSLayoutAttributeBottom
+                                                          multiplier:1.0
+                                                            constant:-10.0];
+
+    [self.view addConstraint:centerX];
+    [self.view addConstraint:centerY];
+    [self.view addConstraint:leading];
+    [self.view addConstraint:trailing];
+    [self.view addConstraint:top];
+    [self.view addConstraint:bottom];
+
+    [self.view layoutIfNeeded];
+
 }
 
 -(NSMutableArray*) setWords2DArrayWithSquareLength: (int) boxLength Words: (NSMutableArray*) materials {
