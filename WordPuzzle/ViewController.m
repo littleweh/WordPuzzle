@@ -20,12 +20,13 @@
     self.wordBoxSize = 8;
     
     NSMutableArray* numbers = [NSMutableArray arrayWithCapacity:64];
-    for (int i =0; i<64; i++) {
+    
+    // For test
+    for (int i =0; i<self.wordBoxSize * self.wordBoxSize; i++) {
         numbers[i] = [[NSString alloc]initWithFormat:@"%i", i+1];
     }
     self.words2DArray = [self setWords2DArrayWithSquareLength:self.wordBoxSize Words:numbers];
     [self showWords2DArrayContent];
-    
     
     
 }
