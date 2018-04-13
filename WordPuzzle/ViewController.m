@@ -33,7 +33,7 @@
     [self showWords2DArrayContent];
     
     self.gameView = [[WordPuzzleView alloc] initWithFrame:CGRectMake(50, 50 , 300, 400)];
-    self.gameView.backgroundColor = [UIColor yellowColor];
+    self.gameView.backgroundColor = [UIColor whiteColor];
     [self.view addSubview:self.gameView];
 
     
