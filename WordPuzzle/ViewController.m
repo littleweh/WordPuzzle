@@ -33,9 +33,9 @@
     [self showWords2DArrayContent];
 
     self.gameView = [[WordPuzzleView alloc] initWithFrame:CGRectMake(50, 50, 200, 300)];
-    self.gameView.backgroundColor = [UIColor clearColor];
     [self.view addSubview:self.gameView];
-  [self setupGameView];
+    [self setupGameView];
+    [self.gameView setDelegate:self];
 
     NSLog(@"after");
 
@@ -43,6 +43,7 @@
 }
 
 -(void) setupGameView {
+    self.gameView.backgroundColor = [UIColor clearColor];
     self.gameView.translatesAutoresizingMaskIntoConstraints = NO;
 
     NSLayoutConstraint *centerX = [NSLayoutConstraint constraintWithItem:self.gameView
@@ -125,6 +126,12 @@
         }
     }
 }
+
+
+- (NSMutableArray *)modelForWordPuzzleView:(WordPuzzleView *)myPuzzleView {
+    return self.words2DArray;
+}
+
 
 
 @end

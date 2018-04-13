@@ -10,12 +10,12 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "WordPuzzle/View/WordPuzzleView.m"
-            timestampString = "545294106.814573"
+            timestampString = "545298163.960531"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "28"
-            endingLineNumber = "28"
-            landmarkName = "-drawRect:"
+            startingLineNumber = "74"
+            endingLineNumber = "74"
+            landmarkName = "-drawWords"
             landmarkType = "7">
          </BreakpointContent>
       </BreakpointProxy>
