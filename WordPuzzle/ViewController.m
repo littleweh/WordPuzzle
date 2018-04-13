@@ -7,16 +7,20 @@
 //
 
 #import "ViewController.h"
+#import "WordPuzzleView.h"
 
 @interface ViewController ()
 @property (assign, nonatomic, readwrite) int wordBoxSize;
 @property (strong, nonatomic, readwrite) NSMutableArray* words2DArray;
+@property (strong, nonatomic, readwrite) WordPuzzleView *gameView;
 @end
 
 @implementation ViewController
 
 - (void)viewDidLoad {
     [super viewDidLoad];
+    
+    self.view.backgroundColor = [UIColor whiteColor];
     self.wordBoxSize = 8;
     
     NSMutableArray* numbers = [NSMutableArray arrayWithCapacity:64];
@@ -28,6 +32,10 @@
     self.words2DArray = [self setWords2DArrayWithSquareLength:self.wordBoxSize Words:numbers];
     [self showWords2DArrayContent];
     
+    self.gameView = [[WordPuzzleView alloc] initWithFrame:CGRectMake(50, 50 , 300, 400)];
+    self.gameView.backgroundColor = [UIColor yellowColor];
+    [self.view addSubview:self.gameView];
+
     
 }
 
