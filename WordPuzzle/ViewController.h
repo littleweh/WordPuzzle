@@ -9,7 +9,7 @@
 #import <UIKit/UIKit.h>
 #import "WordPuzzleView.h"
 
-@interface ViewController : UIViewController<WordPuzzleViewDelegate>
+@interface ViewController : UIViewController<WordPuzzleViewDelegate, UITextFieldDelegate>
 
 @end
 

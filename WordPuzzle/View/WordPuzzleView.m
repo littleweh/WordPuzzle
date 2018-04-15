@@ -11,7 +11,10 @@
 @interface WordPuzzleView()
 @property (assign, nonatomic) CGFloat tableLength;
 @property (assign, nonatomic) CGPoint tableOrigin;
+@property (assign, nonatomic) NSInteger rowNumber;
+@property (assign, nonatomic) CGFloat cellLength;
 @property (strong, nonatomic) NSMutableArray *puzzleModel;
+@property (assign, nonatomic) double fontSizeFromCellSize;
 @end
 
 @implementation WordPuzzleView
@@ -23,14 +26,17 @@
 
 - (void)drawRect:(CGRect)rect {
     CGFloat padding = 2.0;
+    self.fontSizeFromCellSize = 0.6;
+
     self.tableLength = MIN(self.frame.size.width, self.frame.size.height) - padding;
     self.tableOrigin = CGPointMake((self.frame.size.width - self.tableLength) / 2,
                                    (self.frame.size.height - self.tableLength) / 2);
     if ([self.delegate respondsToSelector:@selector(modelForWordPuzzleView:)]) {
         self.puzzleModel = [self.delegate modelForWordPuzzleView:self];
-        NSUInteger rowNum = self.puzzleModel.count;
-        [self drawTableCellWithRowNumber:rowNum];
-        [self drawWordsWithRowNumber:rowNum];
+        self.rowNumber = self.puzzleModel.count;
+        self.cellLength = self.tableLength / self.rowNumber;
+        [self drawTableCell];
+        [self drawWords];
     }
 
 }
@@ -39,46 +45,50 @@
 
     CGPoint touchPoint = [tapRecognizer locationInView:self];
 
-    NSInteger x = (touchPoint.x - self.tableOrigin.x ) / self.tableLength * self.puzzleModel.count;
-    NSInteger y = (touchPoint.y - self.tableOrigin.y ) / self.tableLength * self.puzzleModel.count;
+    NSInteger x = (touchPoint.x - self.tableOrigin.x ) / self.cellLength;
+    NSInteger y = (touchPoint.y - self.tableOrigin.y ) / self.cellLength;
 
     NSLog(@"x: %d, y: %d ", x, y);
+    if ( x >=0 && x <self.rowNumber && y >=0 && y <self.rowNumber) {
+        CGPoint cellOrigin = CGPointMake(x * self.cellLength + self.tableOrigin.x,
+                                         y * self.cellLength + self.tableOrigin.y);
+        CGRect rect = CGRectMake(cellOrigin.x,
+                                 cellOrigin.y,
+                                 self.cellLength,
+                                 self.cellLength);
 
-    CGPoint cellOrigin = CGPointMake(x * self.tableLength + self.tableOrigin.x,
-                                     y * self.tableLength + self.tableOrigin.y);
-    CGRect rect = CGRectMake(cellOrigin.x,
-                             cellOrigin.y,
-                             self.tableLength / self.puzzleModel.count,
-                             self.tableLength / self.puzzleModel.count);
+        double fontSize = self.cellLength * self.fontSizeFromCellSize;
 
-    self.myTextField = [[UITextField alloc]initWithFrame:rect];
-    self.myTextField.backgroundColor = [UIColor yellowColor];
-    self.myTextField.borderStyle = UITextBorderStyleRoundedRect;
-    self.myTextField.placeholder = self.puzzleModel[x][y];
-    self.myTextField.autocorrectionType = UITextAutocorrectionTypeNo;
-    self.myTextField.keyboardType = UIKeyboardTypeDefault;
-    self.myTextField.returnKeyType = UIReturnKeyDefault;
-    self.myTextField.clearButtonMode = UITextFieldViewModeWhileEditing;
-    self.myTextField.contentVerticalAlignment = UIControlContentVerticalAlignmentCenter;
-    NSLog(@"myTextField Frame: %@", NSStringFromCGRect(rect));
-    [self addSubview:self.myTextField];
+        self.myTextField = [[UITextField alloc]initWithFrame:rect];
+        self.myTextField.backgroundColor = [UIColor yellowColor];
+        self.myTextField.borderStyle = UITextBorderStyleRoundedRect;
+        self.myTextField.autocorrectionType = UITextAutocorrectionTypeNo;
+        self.myTextField.keyboardType = UIKeyboardTypeDefault;
+        self.myTextField.returnKeyType = UIReturnKeyDefault;
+        self.myTextField.clearButtonMode = UITextFieldViewModeWhileEditing;
+        self.myTextField.contentVerticalAlignment = UIControlContentVerticalAlignmentCenter;
+        self.myTextField.contentHorizontalAlignment = UIControlContentHorizontalAlignmentCenter;
+        self.myTextField.placeholder = self.puzzleModel[y][x];
+        self.myTextField.font = [UIFont fontWithName:@"Helvetica" size:fontSize-2];
+        NSLog(@"myTextField Frame: %@", NSStringFromCGRect(rect));
+        [self addSubview:self.myTextField];
+    }
+
+
 }
 
--(void) drawTableCellWithRowNumber: (NSUInteger) number {
-
-    NSAssert(number != 0, @"number should not be empty");
-
+-(void) drawTableCell {
     UIBezierPath *tablePath = [UIBezierPath bezierPath];
-    for (int i = 0; i <= number; i++) {
+    for (int i = 0; i <= self.rowNumber; i++) {
         // row
         [tablePath moveToPoint:CGPointMake(self.tableOrigin.x,
-                                         self.tableOrigin.y + self.tableLength * i / number)];
+                                         self.tableOrigin.y + i * self.cellLength)];
         [tablePath addLineToPoint:CGPointMake(self.tableOrigin.x + self.tableLength,
-                                            self.tableOrigin.y + self.tableLength * i / number)];
+                                            self.tableOrigin.y + i * self.cellLength)];
         // column
-        [tablePath moveToPoint:CGPointMake(self.tableOrigin .x + self.tableLength * i / number,
+        [tablePath moveToPoint:CGPointMake(self.tableOrigin.x + i * self.cellLength,
                                          self.tableOrigin.y)];
-        [tablePath addLineToPoint:CGPointMake(self.tableOrigin.x + self.tableLength * i / number,
+        [tablePath addLineToPoint:CGPointMake(self.tableOrigin.x + i * self.cellLength,
                                             self.tableOrigin.y + self.tableLength)];
         
     }
@@ -88,9 +98,8 @@
 
 }
 
--(void) drawWordsWithRowNumber: (NSUInteger) number {
-    CGSize cellSize = CGSizeMake(self.tableLength / number, self.tableLength / number);
-    double fontSize = cellSize.width * 0.6;
+-(void) drawWords {
+    double fontSize = self.cellLength * self.fontSizeFromCellSize;
     
     NSMutableParagraphStyle *paragraphStyle = NSMutableParagraphStyle.new;
     paragraphStyle.alignment = NSTextAlignmentCenter;
@@ -102,14 +111,14 @@
                                  
                                  };
 
-    for (int i = 0; i < number; i++) {
-        for (int j = 0; j < number; j++) {
+    for (int i = 0; i < self.rowNumber; i++) {
+        for (int j = 0; j < self.rowNumber; j++) {
             NSString *myString = [[NSString alloc] initWithFormat:@"%@", self.puzzleModel[i][j]];
             NSAttributedString *word = [[NSAttributedString alloc]initWithString:myString attributes:attributes];
-            [word drawInRect:CGRectMake(self.tableOrigin.x + j * (self.tableLength / number),
-                                        self.tableOrigin.y + i * (self.tableLength / number) + (cellSize.height - fontSize) * 0.4,
-                                        cellSize.width,
-                                        cellSize.height)];
+            [word drawInRect:CGRectMake(self.tableOrigin.x + j * self.cellLength,
+                                        self.tableOrigin.y + i * self.cellLength + (self.cellLength - fontSize) * 0.4,
+                                        self.cellLength,
+                                        self.cellLength)];
         }
     }
 

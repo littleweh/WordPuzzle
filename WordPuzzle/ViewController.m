@@ -36,6 +36,7 @@
     [self.view addSubview:self.gameView];
     [self setupGameView];
     [self.gameView setDelegate:self];
+    self.gameView.myTextField.delegate = self;
 
     NSLog(@"after");
     

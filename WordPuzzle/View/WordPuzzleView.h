@@ -16,6 +16,6 @@
 
 @interface WordPuzzleView : UIView
 @property (weak, nonatomic) id<WordPuzzleViewDelegate> delegate;
-@property (strong, nonatomic) UITextField* myTextField;
+@property (weak, nonatomic) UITextField* myTextField;
 -(void) drawTextFieldInCellCoordinateByHandlingGestureRecognizerBy: (UITapGestureRecognizer*) tapRecognizer;
 @end
