@@ -26,16 +26,30 @@
     self.tableLength = MIN(self.frame.size.width, self.frame.size.height) - padding;
     self.tableOrigin = CGPointMake((self.frame.size.width - self.tableLength) / 2,
                                    (self.frame.size.height - self.tableLength) / 2);
-
-    self.puzzleModel = [self.delegate modelForWordPuzzleView:self];
-    NSUInteger rowNum = self.puzzleModel.count;
-    [self drawTableCellWithRowNumber:rowNum];
-    [self drawWordsWithRowNumber:rowNum];
+    if ([self.delegate respondsToSelector:@selector(modelForWordPuzzleView:)]) {
+        self.puzzleModel = [self.delegate modelForWordPuzzleView:self];
+        NSUInteger rowNum = self.puzzleModel.count;
+        [self drawTableCellWithRowNumber:rowNum];
+        [self drawWordsWithRowNumber:rowNum];
+    }
 
 }
 
+-(void) calculateCellByHandlingGestureRecognizerBy: (UITapGestureRecognizer*) tapRecognizer {
+    CGPoint touchPoint = [tapRecognizer locationInView:self];
+    NSLog(@"point: %@", NSStringFromCGPoint(touchPoint) );
+
+    NSInteger x = (touchPoint.x - self.tableOrigin.x ) / self.tableLength * self.puzzleModel.count;
+    NSInteger y = (touchPoint.y - self.tableOrigin.y ) / self.tableLength * self.puzzleModel.count;
+
+    NSLog(@"x: %d", x);
+    NSLog(@"y: %d", y);
+}
+
 -(void) drawTableCellWithRowNumber: (NSUInteger) number {
-    
+
+    NSAssert(number != 0, @"number should not be empty");
+
     UIBezierPath *tablePath = [UIBezierPath bezierPath];
     for (int i = 0; i <= number; i++) {
         // row

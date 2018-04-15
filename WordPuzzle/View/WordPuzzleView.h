@@ -9,10 +9,12 @@
 #import <UIKit/UIKit.h>
 @class WordPuzzleView;
 
-@protocol WordPuzzleViewDelegate
+@protocol WordPuzzleViewDelegate <NSObject>
 -(NSMutableArray*) modelForWordPuzzleView: (WordPuzzleView*) myPuzzleView;
+//-(void) showTextField: (WordPuzzleView*) myPuzzleView gestureRecognizer: (UITapGestureRecognizer*) recognizer;
 @end
 
 @interface WordPuzzleView : UIView
 @property (weak, nonatomic) id<WordPuzzleViewDelegate> delegate;
+@property (strong, nonatomic) UITextField* myTextField;
 @end

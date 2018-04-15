@@ -39,9 +39,14 @@
 
     NSLog(@"after");
     
-//    UITapGestureRecognizer *tapGestureRecognizer = [UITapGestureRecognizer alloc] initWithTarget:<#(nullable id)#> action:<#(nullable SEL)#>
-
+    [self addTapGestureRecognizerToGameView];
     
+}
+
+-(void) addTapGestureRecognizerToGameView {
+    UITapGestureRecognizer *tapGestureRecognizer = [[UITapGestureRecognizer alloc] initWithTarget:self.gameView action:@selector(calculateCellByHandlingGestureRecognizerBy:)];
+    tapGestureRecognizer.numberOfTapsRequired = 2;
+    [self.gameView addGestureRecognizer:tapGestureRecognizer];
 }
 
 -(void) setupGameView {
@@ -105,6 +110,7 @@
     [self.view layoutIfNeeded];
 
 }
+// MARK: WordPuzzleView delegate func implementation
 
 -(NSMutableArray*) setWords2DArrayWithSquareLength: (int) boxLength Words: (NSMutableArray*) materials {
     NSMutableArray *words2DArray = [NSMutableArray array];
