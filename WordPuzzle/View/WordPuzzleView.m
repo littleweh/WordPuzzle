@@ -35,15 +35,33 @@
 
 }
 
--(void) calculateCellByHandlingGestureRecognizerBy: (UITapGestureRecognizer*) tapRecognizer {
+-(void) drawTextFieldInCellCoordinateByHandlingGestureRecognizerBy: (UITapGestureRecognizer*) tapRecognizer {
+
     CGPoint touchPoint = [tapRecognizer locationInView:self];
-    NSLog(@"point: %@", NSStringFromCGPoint(touchPoint) );
 
     NSInteger x = (touchPoint.x - self.tableOrigin.x ) / self.tableLength * self.puzzleModel.count;
     NSInteger y = (touchPoint.y - self.tableOrigin.y ) / self.tableLength * self.puzzleModel.count;
 
-    NSLog(@"x: %d", x);
-    NSLog(@"y: %d", y);
+    NSLog(@"x: %d, y: %d ", x, y);
+
+    CGPoint cellOrigin = CGPointMake(x * self.tableLength + self.tableOrigin.x,
+                                     y * self.tableLength + self.tableOrigin.y);
+    CGRect rect = CGRectMake(cellOrigin.x,
+                             cellOrigin.y,
+                             self.tableLength / self.puzzleModel.count,
+                             self.tableLength / self.puzzleModel.count);
+
+    self.myTextField = [[UITextField alloc]initWithFrame:rect];
+    self.myTextField.backgroundColor = [UIColor yellowColor];
+    self.myTextField.borderStyle = UITextBorderStyleRoundedRect;
+    self.myTextField.placeholder = self.puzzleModel[x][y];
+    self.myTextField.autocorrectionType = UITextAutocorrectionTypeNo;
+    self.myTextField.keyboardType = UIKeyboardTypeDefault;
+    self.myTextField.returnKeyType = UIReturnKeyDefault;
+    self.myTextField.clearButtonMode = UITextFieldViewModeWhileEditing;
+    self.myTextField.contentVerticalAlignment = UIControlContentVerticalAlignmentCenter;
+    NSLog(@"myTextField Frame: %@", NSStringFromCGRect(rect));
+    [self addSubview:self.myTextField];
 }
 
 -(void) drawTableCellWithRowNumber: (NSUInteger) number {

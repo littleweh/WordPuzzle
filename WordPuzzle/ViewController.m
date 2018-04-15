@@ -44,7 +44,7 @@
 }
 
 -(void) addTapGestureRecognizerToGameView {
-    UITapGestureRecognizer *tapGestureRecognizer = [[UITapGestureRecognizer alloc] initWithTarget:self.gameView action:@selector(calculateCellByHandlingGestureRecognizerBy:)];
+    UITapGestureRecognizer *tapGestureRecognizer = [[UITapGestureRecognizer alloc] initWithTarget:self.gameView action:@selector(drawTextFieldInCellCoordinateByHandlingGestureRecognizerBy:)];
     tapGestureRecognizer.numberOfTapsRequired = 2;
     [self.gameView addGestureRecognizer:tapGestureRecognizer];
 }
