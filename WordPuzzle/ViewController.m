@@ -43,12 +43,24 @@
     [self.gameView addSubview:self.myTextField];
     [self setupMyTextField];
     [self.myTextField setDelegate:self];
-
-    NSLog(@"after");
     
     [self addTapGestureRecognizerToGameView];
     
+//    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(keyboardNotification:) name:UIKeyboardWillChangeFrameNotification object:nil];
+    
 }
+
+-(void) viewWillDisappear:(BOOL)animated {
+    [super viewWillDisappear:animated];
+    [[NSNotificationCenter defaultCenter] removeObserver:self];
+}
+
+//-(void) keyboardNotification: (NSNotification *) notification {
+//    NSDictionary *userInfo = notification.userInfo;
+//    if (userInfo != nil) {
+//        CGRect endFrame = userInfo[UIKeyboardFrameEndUserInfoKey];
+//    }
+//}
 
 -(void) setupMyTextField {
     self.myTextField.textAlignment = NSTextAlignmentCenter;
@@ -57,6 +69,8 @@
     self.myTextField.borderStyle = UITextBorderStyleNone;
     self.myTextField.autocorrectionType = UITextAutocorrectionTypeNo;
     self.myTextField.keyboardType = UIKeyboardTypeDefault;
+    self.myTextField.backgroundColor = [UIColor whiteColor];
+    self.myTextField.textColor = [UIColor blackColor];
     // ToDo: returnkey Enter
     self.myTextField.returnKeyType = UIReturnKeyDone;
     self.myTextField.clearButtonMode = UITextFieldViewModeWhileEditing;
@@ -70,21 +84,29 @@
 
 // MARK: UITextField delegate func implementation
 -(BOOL)textFieldShouldBeginEditing: (UITextField *) textField {
-    NSLog(@"textFieldShouldBeginEditing");
-    textField.backgroundColor = [UIColor whiteColor];
-    textField.textColor = [UIColor blackColor];
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(keyboardWillShow:) name:UIKeyboardWillShowNotification object:nil];
     return YES;
 }
 
 -(void)textFieldDidBeginEditing:(UITextField *) textField {
-    NSLog(@"textFieldDidBeginEditing");
 }
 
-// ToDo: word number limit for Chinese
+-(void) textFieldDidEndEditing:(UITextField *)textField {
+    [[NSNotificationCenter defaultCenter] removeObserver:self name:UIKeyboardWillShowNotification object:nil];
+    [[NSNotificationCenter defaultCenter] removeObserver:self name:UIKeyboardWillHideNotification object:nil];
+}
+
+-(BOOL)textFieldShouldEndEditing:(UITextField *)textField {
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(keyboardWillHide:) name:UIKeyboardWillHideNotification object:nil];
+    [self.myTextField endEditing:YES];
+    return YES;
+}
+
+// ToDo: word number limit for Chinese, 0 word situation handling
 -(BOOL) textField:(UITextField *)textField shouldChangeCharactersInRange:(NSRange)range replacementString:(NSString *)string {
     NSInteger countOfWords = [textField.text length] + [string length] - range.length;
     NSInteger maxNumberOfWords = 1;
-    if (countOfWords > maxNumberOfWords) {
+    if (countOfWords != maxNumberOfWords) {
         return NO;
     } else {
         return YES;
@@ -97,6 +119,40 @@
     [textField setHidden:YES];
     [self.gameView setNeedsLayout];
     return YES;
+}
+
+CGFloat deltaY;
+
+// MARK: keyboard selector func
+-(void) keyboardWillShow:(NSNotification *) notification {
+    CGSize keyboardSize = [[[notification userInfo]objectForKey:UIKeyboardFrameBeginUserInfoKey]CGRectValue].size;
+    NSTimeInterval duration = [[[notification userInfo] objectForKey:UIKeyboardAnimationDurationUserInfoKey]doubleValue];
+    NSUInteger curve = [[[notification userInfo] objectForKey:UIKeyboardAnimationCurveUserInfoKey] unsignedIntegerValue];
+    
+    CGRect myTextFieldFrameInView = [self.view convertRect:self.myTextField.frame fromView:self.gameView];
+    CGFloat padding = 20;
+    deltaY = self.view.frame.size.height - keyboardSize.height - padding - myTextFieldFrameInView.size.height - myTextFieldFrameInView.origin.y;
+    if (deltaY < 0 ) {
+        [UIView animateWithDuration:duration delay:0 options:curve animations:^{
+            CGRect f = self.gameView.frame;
+            f.origin.y += deltaY;
+            self.gameView.frame = f;
+            
+        } completion:^(BOOL finished){}];
+    }
+    
+}
+
+-(void) keyboardWillHide: (NSNotification *) notification {
+    NSTimeInterval duration = [[[notification userInfo] objectForKey:UIKeyboardAnimationDurationUserInfoKey]doubleValue];
+    NSUInteger curve = [[[notification userInfo] objectForKey:UIKeyboardAnimationCurveUserInfoKey] unsignedIntegerValue];
+    if (deltaY < 0) {
+        [UIView animateWithDuration:duration delay:0 options:curve animations:^{
+            CGRect f = self.gameView.frame;
+            f.origin.y -= deltaY;
+            self.gameView.frame = f;
+        } completion:^(BOOL finished){}];
+    }
 }
 
 // MARK: WordPuzzleView delegate func implementation
