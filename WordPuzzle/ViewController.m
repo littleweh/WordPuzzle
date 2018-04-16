@@ -34,7 +34,7 @@
     self.words2DArray = [self setWords2DArrayWithSquareLength:self.wordBoxSize Words:numbers];
     [self showWords2DArrayContent];
 
-    self.gameView = [[WordPuzzleView alloc] initWithFrame:CGRectMake(50, 50, 200, 300)];
+    self.gameView = [[WordPuzzleView alloc] initWithFrame:CGRectMake(30, 30, 300, 300)];
     [self.view addSubview:self.gameView];
     [self setupGameView];
     [self.gameView setDelegate:self];
@@ -46,21 +46,12 @@
     
     [self addTapGestureRecognizerToGameView];
     
-//    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(keyboardNotification:) name:UIKeyboardWillChangeFrameNotification object:nil];
-    
 }
 
 -(void) viewWillDisappear:(BOOL)animated {
     [super viewWillDisappear:animated];
     [[NSNotificationCenter defaultCenter] removeObserver:self];
 }
-
-//-(void) keyboardNotification: (NSNotification *) notification {
-//    NSDictionary *userInfo = notification.userInfo;
-//    if (userInfo != nil) {
-//        CGRect endFrame = userInfo[UIKeyboardFrameEndUserInfoKey];
-//    }
-//}
 
 -(void) setupMyTextField {
     self.myTextField.textAlignment = NSTextAlignmentCenter;
@@ -106,7 +97,8 @@
 -(BOOL) textField:(UITextField *)textField shouldChangeCharactersInRange:(NSRange)range replacementString:(NSString *)string {
     NSInteger countOfWords = [textField.text length] + [string length] - range.length;
     NSInteger maxNumberOfWords = 1;
-    if (countOfWords != maxNumberOfWords) {
+    
+    if (countOfWords > maxNumberOfWords) {
         return NO;
     } else {
         return YES;
@@ -114,11 +106,18 @@
 }
 -(BOOL)textFieldShouldReturn:(UITextField *)textField {
     [textField resignFirstResponder];
-    self.words2DArray[(NSInteger) self.wordPositionInModel.x][(NSInteger) self.wordPositionInModel.y] = textField.text;
-    textField.text = nil;
     [textField setHidden:YES];
     [self.gameView setNeedsLayout];
-    return YES;
+    
+    // ToDo: when the text length is 0, it cannot be returned
+
+    if ([textField.text length] == 0) {
+        return NO;
+    } else {
+        self.words2DArray[(NSInteger) self.wordPositionInModel.x][(NSInteger) self.wordPositionInModel.y] = textField.text;
+        textField.text = nil;
+        return YES;
+    }
 }
 
 CGFloat deltaY;
@@ -126,19 +125,25 @@ CGFloat deltaY;
 // MARK: keyboard selector func
 -(void) keyboardWillShow:(NSNotification *) notification {
     CGSize keyboardSize = [[[notification userInfo]objectForKey:UIKeyboardFrameBeginUserInfoKey]CGRectValue].size;
-    NSTimeInterval duration = [[[notification userInfo] objectForKey:UIKeyboardAnimationDurationUserInfoKey]doubleValue];
-    NSUInteger curve = [[[notification userInfo] objectForKey:UIKeyboardAnimationCurveUserInfoKey] unsignedIntegerValue];
+//    NSTimeInterval duration = [[[notification userInfo] objectForKey:UIKeyboardAnimationDurationUserInfoKey]doubleValue];
+//    NSUInteger curve = [[[notification userInfo] objectForKey:UIKeyboardAnimationCurveUserInfoKey] unsignedIntegerValue];
     
     CGRect myTextFieldFrameInView = [self.view convertRect:self.myTextField.frame fromView:self.gameView];
     CGFloat padding = 20;
     deltaY = self.view.frame.size.height - keyboardSize.height - padding - myTextFieldFrameInView.size.height - myTextFieldFrameInView.origin.y;
     if (deltaY < 0 ) {
-        [UIView animateWithDuration:duration delay:0 options:curve animations:^{
-            CGRect f = self.gameView.frame;
-            f.origin.y += deltaY;
-            self.gameView.frame = f;
-            
-        } completion:^(BOOL finished){}];
+        
+        [UIView beginAnimations:nil context:NULL];
+        [UIView setAnimationDuration:[notification.userInfo[UIKeyboardAnimationDurationUserInfoKey] doubleValue]];
+        [UIView setAnimationCurve:[notification.userInfo[UIKeyboardAnimationCurveUserInfoKey] integerValue]];
+        [UIView setAnimationBeginsFromCurrentState:YES];
+        
+        CGRect f = self.gameView.frame;
+        f.origin.y += deltaY;
+        self.gameView.frame = f;
+        
+        [UIView commitAnimations];
+
     }
     
 }
