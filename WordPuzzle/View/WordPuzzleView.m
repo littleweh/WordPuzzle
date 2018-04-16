@@ -52,28 +52,33 @@
     if ( x >=0 && x <self.rowNumber && y >=0 && y <self.rowNumber) {
         CGPoint cellOrigin = CGPointMake(x * self.cellLength + self.tableOrigin.x,
                                          y * self.cellLength + self.tableOrigin.y);
-        CGRect rect = CGRectMake(cellOrigin.x,
-                                 cellOrigin.y,
-                                 self.cellLength,
-                                 self.cellLength);
+        CGFloat borderWidth = 2.0;
+        CGRect rect = CGRectMake(cellOrigin.x-borderWidth,
+                                 cellOrigin.y-borderWidth,
+                                 self.cellLength + 2 * borderWidth,
+                                 self.cellLength + 2 * borderWidth);
 
         double fontSize = self.cellLength * self.fontSizeFromCellSize;
 
         self.myTextField = [[UITextField alloc]initWithFrame:rect];
         self.myTextField.backgroundColor = [UIColor yellowColor];
-        self.myTextField.borderStyle = UITextBorderStyleRoundedRect;
+        self.myTextField.textColor = [UIColor blueColor];
+        self.myTextField.textAlignment = NSTextAlignmentCenter;
+        self.myTextField.borderStyle = UITextBorderStyleNone;
         self.myTextField.autocorrectionType = UITextAutocorrectionTypeNo;
         self.myTextField.keyboardType = UIKeyboardTypeDefault;
-        self.myTextField.returnKeyType = UIReturnKeyDefault;
+
+        // ToDo: returnkey Enter
+        self.myTextField.returnKeyType = UIReturnKeyDone;
         self.myTextField.clearButtonMode = UITextFieldViewModeWhileEditing;
         self.myTextField.contentVerticalAlignment = UIControlContentVerticalAlignmentCenter;
         self.myTextField.contentHorizontalAlignment = UIControlContentHorizontalAlignmentCenter;
         self.myTextField.placeholder = self.puzzleModel[y][x];
-        self.myTextField.font = [UIFont fontWithName:@"Helvetica" size:fontSize-2];
+        self.myTextField.font = [UIFont fontWithName:@"Helvetica" size:fontSize];
         NSLog(@"myTextField Frame: %@", NSStringFromCGRect(rect));
         [self addSubview:self.myTextField];
+        [self.myTextField becomeFirstResponder];
     }
-
 
 }
 

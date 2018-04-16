@@ -50,6 +50,31 @@
     [self.gameView addGestureRecognizer:tapGestureRecognizer];
 }
 
+// MARK: UITextField delegate func implementation
+- (BOOL)textFieldShouldReturn:(UITextField *)textField {
+    return true;
+}
+
+// MARK: WordPuzzleView delegate func implementation
+- (NSMutableArray *)modelForWordPuzzleView:(WordPuzzleView *)myPuzzleView {
+    return self.words2DArray;
+}
+
+// MARK: Model
+-(NSMutableArray*) setWords2DArrayWithSquareLength: (int) boxLength Words: (NSMutableArray*) materials {
+    NSMutableArray *words2DArray = [NSMutableArray array];
+    NSInteger index = 0;
+    for (int row = 0; row < boxLength; row++) {
+        NSMutableArray *rowArray = [NSMutableArray array];
+        for (int column =0; column < boxLength; column++) {
+            [rowArray addObject:materials[index++]];
+        }
+        [words2DArray addObject:rowArray];
+    }
+    return words2DArray;
+}
+
+// MARK: UI
 -(void) setupGameView {
     self.gameView.backgroundColor = [UIColor clearColor];
     self.gameView.translatesAutoresizingMaskIntoConstraints = NO;
@@ -69,7 +94,7 @@
                                                                attribute:NSLayoutAttributeCenterY
                                                               multiplier:1.0
                                                                 constant:0.0];
-     NSLayoutConstraint *leading = [NSLayoutConstraint constraintWithItem:self.gameView
+    NSLayoutConstraint *leading = [NSLayoutConstraint constraintWithItem:self.gameView
                                                                attribute:NSLayoutAttributeLeading
                                                                relatedBy:NSLayoutRelationGreaterThanOrEqual
                                                                   toItem:self.view.layoutMarginsGuide
@@ -78,28 +103,28 @@
                                                                 constant:10.0];
 
     NSLayoutConstraint *trailing = [NSLayoutConstraint constraintWithItem:self.gameView
-                                                               attribute:NSLayoutAttributeTrailing
-                                                               relatedBy:NSLayoutRelationGreaterThanOrEqual
-                                                                  toItem:self.view.layoutMarginsGuide
-                                                               attribute:NSLayoutAttributeTrailing
-                                                              multiplier:1.0
-                                                                constant:-10.0];
+                                                                attribute:NSLayoutAttributeTrailing
+                                                                relatedBy:NSLayoutRelationGreaterThanOrEqual
+                                                                   toItem:self.view.layoutMarginsGuide
+                                                                attribute:NSLayoutAttributeTrailing
+                                                               multiplier:1.0
+                                                                 constant:-10.0];
 
     NSLayoutConstraint *top = [NSLayoutConstraint constraintWithItem:self.gameView
-                                                               attribute:NSLayoutAttributeTop
-                                                               relatedBy:NSLayoutRelationGreaterThanOrEqual
-                                                                  toItem:self.view.layoutMarginsGuide
-                                                               attribute:NSLayoutAttributeTop
-                                                              multiplier:1.0
-                                                                constant:10.0];
-
-    NSLayoutConstraint *bottom = [NSLayoutConstraint constraintWithItem:self.gameView
-                                                           attribute:NSLayoutAttributeBottom
+                                                           attribute:NSLayoutAttributeTop
                                                            relatedBy:NSLayoutRelationGreaterThanOrEqual
                                                               toItem:self.view.layoutMarginsGuide
-                                                           attribute:NSLayoutAttributeBottom
+                                                           attribute:NSLayoutAttributeTop
                                                           multiplier:1.0
-                                                            constant:-10.0];
+                                                            constant:10.0];
+
+    NSLayoutConstraint *bottom = [NSLayoutConstraint constraintWithItem:self.gameView
+                                                              attribute:NSLayoutAttributeBottom
+                                                              relatedBy:NSLayoutRelationGreaterThanOrEqual
+                                                                 toItem:self.view.layoutMarginsGuide
+                                                              attribute:NSLayoutAttributeBottom
+                                                             multiplier:1.0
+                                                               constant:-10.0];
 
     [self.view addConstraint:centerX];
     [self.view addConstraint:centerY];
@@ -111,20 +136,7 @@
     [self.view layoutIfNeeded];
 
 }
-// MARK: WordPuzzleView delegate func implementation
 
--(NSMutableArray*) setWords2DArrayWithSquareLength: (int) boxLength Words: (NSMutableArray*) materials {
-    NSMutableArray *words2DArray = [NSMutableArray array];
-    NSInteger index = 0;
-    for (int row = 0; row < boxLength; row++) {
-        NSMutableArray *rowArray = [NSMutableArray array];
-        for (int column =0; column < boxLength; column++) {
-            [rowArray addObject:materials[index++]];
-        }
-        [words2DArray addObject:rowArray];
-    }
-    return words2DArray;
-}
 
 // MARK: FOR TEST
 -(void) showWords2DArrayContent {
@@ -135,12 +147,5 @@
         }
     }
 }
-
-
-- (NSMutableArray *)modelForWordPuzzleView:(WordPuzzleView *)myPuzzleView {
-    return self.words2DArray;
-}
-
-
 
 @end
