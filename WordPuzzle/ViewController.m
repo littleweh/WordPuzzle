@@ -80,9 +80,11 @@
     NSLog(@"textFieldDidBeginEditing");
 }
 
+// ToDo: word number limit for Chinese
 -(BOOL) textField:(UITextField *)textField shouldChangeCharactersInRange:(NSRange)range replacementString:(NSString *)string {
-    NSLog(@"textField:shouldChangeChar...");
-    if ([string isEqualToString:@"#"]) {
+    NSInteger countOfWords = [textField.text length] + [string length] - range.length;
+    NSInteger maxNumberOfWords = 1;
+    if (countOfWords > maxNumberOfWords) {
         return NO;
     } else {
         return YES;
