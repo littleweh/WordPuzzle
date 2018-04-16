@@ -11,11 +11,10 @@
 
 @protocol WordPuzzleViewDelegate <NSObject>
 -(NSMutableArray*) modelForWordPuzzleView: (WordPuzzleView*) myPuzzleView;
-//-(void) showTextField: (WordPuzzleView*) myPuzzleView gestureRecognizer: (UITapGestureRecognizer*) recognizer;
+-(void) textFieldInOrigin: (CGPoint) cellOrigin WithCellLength: (CGFloat) cellLength AndCellModelCoordinate: (CGPoint) cellCooridnate;
 @end
 
 @interface WordPuzzleView : UIView
 @property (weak, nonatomic) id<WordPuzzleViewDelegate> delegate;
-@property (strong, nonatomic) UITextField* myTextField;
--(void) drawTextFieldInCellCoordinateByHandlingGestureRecognizerBy: (UITapGestureRecognizer*) tapRecognizer;
+-(void) calculateTouchPointInWhichCellByHandlingGestureRecognizerBy: (UITapGestureRecognizer *) tapRecognizer;
 @end

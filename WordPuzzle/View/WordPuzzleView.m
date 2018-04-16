@@ -41,45 +41,17 @@
 
 }
 
--(void) drawTextFieldInCellCoordinateByHandlingGestureRecognizerBy: (UITapGestureRecognizer*) tapRecognizer {
-
+-(void) calculateTouchPointInWhichCellByHandlingGestureRecognizerBy: (UITapGestureRecognizer *) tapRecognizer {
     CGPoint touchPoint = [tapRecognizer locationInView:self];
-
-    NSInteger x = (touchPoint.x - self.tableOrigin.x ) / self.cellLength;
-    NSInteger y = (touchPoint.y - self.tableOrigin.y ) / self.cellLength;
-
-    NSLog(@"x: %d, y: %d ", x, y);
-    if ( x >=0 && x <self.rowNumber && y >=0 && y <self.rowNumber) {
+    
+    NSInteger x = ( touchPoint.x - self.tableOrigin.x ) / self.cellLength;
+    NSInteger y = ( touchPoint.y - self.tableOrigin.y ) / self.cellLength;
+    
+    if (x >= 0 && (long) x < self.rowNumber && y >=0 && (long)y < self.rowNumber) {
         CGPoint cellOrigin = CGPointMake(x * self.cellLength + self.tableOrigin.x,
-                                         y * self.cellLength + self.tableOrigin.y);
-        CGFloat borderWidth = 2.0;
-        CGRect rect = CGRectMake(cellOrigin.x-borderWidth,
-                                 cellOrigin.y-borderWidth,
-                                 self.cellLength + 2 * borderWidth,
-                                 self.cellLength + 2 * borderWidth);
-
-        double fontSize = self.cellLength * self.fontSizeFromCellSize;
-
-        self.myTextField = [[UITextField alloc]initWithFrame:rect];
-        self.myTextField.backgroundColor = [UIColor yellowColor];
-        self.myTextField.textColor = [UIColor blueColor];
-        self.myTextField.textAlignment = NSTextAlignmentCenter;
-        self.myTextField.borderStyle = UITextBorderStyleNone;
-        self.myTextField.autocorrectionType = UITextAutocorrectionTypeNo;
-        self.myTextField.keyboardType = UIKeyboardTypeDefault;
-
-        // ToDo: returnkey Enter
-        self.myTextField.returnKeyType = UIReturnKeyDone;
-        self.myTextField.clearButtonMode = UITextFieldViewModeWhileEditing;
-        self.myTextField.contentVerticalAlignment = UIControlContentVerticalAlignmentCenter;
-        self.myTextField.contentHorizontalAlignment = UIControlContentHorizontalAlignmentCenter;
-        self.myTextField.placeholder = self.puzzleModel[y][x];
-        self.myTextField.font = [UIFont fontWithName:@"Helvetica" size:fontSize];
-        NSLog(@"myTextField Frame: %@", NSStringFromCGRect(rect));
-        [self addSubview:self.myTextField];
-        [self.myTextField becomeFirstResponder];
+                                         y *self.cellLength + self.tableOrigin.y);
+        [self.delegate textFieldInOrigin: cellOrigin WithCellLength: self.cellLength AndCellModelCoordinate: CGPointMake(y, x)];
     }
-
 }
 
 -(void) drawTableCell {
@@ -108,11 +80,12 @@
     
     NSMutableParagraphStyle *paragraphStyle = NSMutableParagraphStyle.new;
     paragraphStyle.alignment = NSTextAlignmentCenter;
+    [paragraphStyle setLineBreakMode:NSLineBreakByTruncatingMiddle];
     NSDictionary *attributes = @{
                                  NSFontAttributeName: [UIFont fontWithName:@"Helvetica" size:fontSize],
                                  NSStrokeWidthAttributeName: @(0),
                                  NSStrokeColorAttributeName: [UIColor blackColor],
-                                 NSParagraphStyleAttributeName: paragraphStyle
+                                 NSParagraphStyleAttributeName: paragraphStyle,
                                  
                                  };
 

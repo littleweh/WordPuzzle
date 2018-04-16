@@ -13,6 +13,8 @@
 @property (assign, nonatomic, readwrite) int wordBoxSize;
 @property (strong, nonatomic, readwrite) NSMutableArray* words2DArray;
 @property (strong, nonatomic, readwrite) WordPuzzleView *gameView;
+@property (strong, nonatomic, readwrite) UITextField * myTextField;
+@property (assign, nonatomic, readwrite) CGPoint wordPositionInModel;
 @end
 
 @implementation ViewController
@@ -36,7 +38,11 @@
     [self.view addSubview:self.gameView];
     [self setupGameView];
     [self.gameView setDelegate:self];
-    self.gameView.myTextField.delegate = self;
+    
+    self.myTextField = [[UITextField alloc] init];
+    [self.gameView addSubview:self.myTextField];
+    [self setupMyTextField];
+    [self.myTextField setDelegate:self];
 
     NSLog(@"after");
     
@@ -44,20 +50,71 @@
     
 }
 
+-(void) setupMyTextField {
+    self.myTextField.textAlignment = NSTextAlignmentCenter;
+    self.myTextField.contentVerticalAlignment = UIControlContentVerticalAlignmentCenter;
+
+    self.myTextField.borderStyle = UITextBorderStyleNone;
+    self.myTextField.autocorrectionType = UITextAutocorrectionTypeNo;
+    self.myTextField.keyboardType = UIKeyboardTypeDefault;
+    // ToDo: returnkey Enter
+    self.myTextField.returnKeyType = UIReturnKeyDone;
+    self.myTextField.clearButtonMode = UITextFieldViewModeWhileEditing;
+}
+
 -(void) addTapGestureRecognizerToGameView {
-    UITapGestureRecognizer *tapGestureRecognizer = [[UITapGestureRecognizer alloc] initWithTarget:self.gameView action:@selector(drawTextFieldInCellCoordinateByHandlingGestureRecognizerBy:)];
+    UITapGestureRecognizer *tapGestureRecognizer = [[UITapGestureRecognizer alloc] initWithTarget:self.gameView action:@selector(calculateTouchPointInWhichCellByHandlingGestureRecognizerBy:)];
     tapGestureRecognizer.numberOfTapsRequired = 2;
     [self.gameView addGestureRecognizer:tapGestureRecognizer];
 }
 
 // MARK: UITextField delegate func implementation
-- (BOOL)textFieldShouldReturn:(UITextField *)textField {
-    return true;
+-(BOOL)textFieldShouldBeginEditing: (UITextField *) textField {
+    NSLog(@"textFieldShouldBeginEditing");
+    textField.backgroundColor = [UIColor whiteColor];
+    textField.textColor = [UIColor blackColor];
+    return YES;
+}
+
+-(void)textFieldDidBeginEditing:(UITextField *) textField {
+    NSLog(@"textFieldDidBeginEditing");
+}
+
+-(BOOL) textField:(UITextField *)textField shouldChangeCharactersInRange:(NSRange)range replacementString:(NSString *)string {
+    NSLog(@"textField:shouldChangeChar...");
+    if ([string isEqualToString:@"#"]) {
+        return NO;
+    } else {
+        return YES;
+    }
+}
+-(BOOL)textFieldShouldReturn:(UITextField *)textField {
+    [textField resignFirstResponder];
+    self.words2DArray[(NSInteger) self.wordPositionInModel.x][(NSInteger) self.wordPositionInModel.y] = textField.text;
+    textField.text = nil;
+    [textField setHidden:YES];
+    [self.gameView setNeedsLayout];
+    return YES;
 }
 
 // MARK: WordPuzzleView delegate func implementation
 - (NSMutableArray *)modelForWordPuzzleView:(WordPuzzleView *)myPuzzleView {
     return self.words2DArray;
+}
+
+-(void) textFieldInOrigin: (CGPoint) cellOrigin WithCellLength: (CGFloat) cellLength AndCellModelCoordinate: (CGPoint) cellCooridnate {
+    CGFloat borderWidth = 2.0;
+    CGRect rect = CGRectMake(cellOrigin.x - borderWidth,
+                             cellOrigin.y - borderWidth,
+                             cellLength+ 2 * borderWidth,
+                             cellLength + 2 * borderWidth);
+    self.wordPositionInModel = cellCooridnate;
+    self.myTextField.frame = rect;
+    self.myTextField.placeholder = self.words2DArray[(NSInteger) cellCooridnate.x][(NSInteger) cellCooridnate.y];
+    
+    [self.myTextField setHidden:NO];
+    [self.myTextField becomeFirstResponder];
+    
 }
 
 // MARK: Model
