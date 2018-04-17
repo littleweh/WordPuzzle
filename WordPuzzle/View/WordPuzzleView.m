@@ -41,19 +41,6 @@
 
 }
 
--(void) calculateTouchPointInWhichCellByHandlingGestureRecognizerBy: (UITapGestureRecognizer *) tapRecognizer {
-    CGPoint touchPoint = [tapRecognizer locationInView:self];
-    
-    NSInteger x = ( touchPoint.x - self.tableOrigin.x ) / self.cellLength;
-    NSInteger y = ( touchPoint.y - self.tableOrigin.y ) / self.cellLength;
-    
-    if (x >= 0 && (long) x < self.rowNumber && y >=0 && (long)y < self.rowNumber) {
-        CGPoint cellOrigin = CGPointMake(x * self.cellLength + self.tableOrigin.x,
-                                         y *self.cellLength + self.tableOrigin.y);
-        [self.delegate textFieldInOrigin: cellOrigin WithCellLength: self.cellLength AndCellModelCoordinate: CGPointMake(y, x)];
-    }
-}
-
 -(void) drawTableCell {
     UIBezierPath *tablePath = [UIBezierPath bezierPath];
     for (int i = 0; i <= self.rowNumber; i++) {
@@ -102,5 +89,20 @@
 
 }
 
+-(void) calculateTouchPointInWhichCellByHandlingGestureRecognizerBy: (UITapGestureRecognizer *) tapRecognizer {
+    CGPoint touchPoint = [tapRecognizer locationInView:self];
+    if ([self.delegate respondsToSelector:@selector(textFieldPositionInfoWithOrigin:WithCellLength:AndCellModelCoordinate:)]) {
+        NSInteger x = ( touchPoint.x - self.tableOrigin.x ) / self.cellLength;
+        NSInteger y = ( touchPoint.y - self.tableOrigin.y ) / self.cellLength;
+        
+        if (x >= 0 && (long)x < self.rowNumber && y >=0 && (long)y < self.rowNumber) {
+            CGPoint cellOrigin = CGPointMake(x * self.cellLength + self.tableOrigin.x,
+                                             y *self.cellLength + self.tableOrigin.y);
+            [self.delegate textFieldPositionInfoWithOrigin: cellOrigin
+                                            WithCellLength: self.cellLength
+                                    AndCellModelCoordinate: CGPointMake(y, x)];
+        }
+    }
+}
 
 @end

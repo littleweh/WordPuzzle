@@ -11,7 +11,7 @@
 
 @protocol WordPuzzleViewDelegate <NSObject>
 -(NSMutableArray*) modelForWordPuzzleView: (WordPuzzleView*) myPuzzleView;
--(void) textFieldInOrigin: (CGPoint) cellOrigin WithCellLength: (CGFloat) cellLength AndCellModelCoordinate: (CGPoint) cellCooridnate;
+-(void) textFieldPositionInfoWithOrigin: (CGPoint) cellOrigin WithCellLength: (CGFloat) cellLength AndCellModelCoordinate: (CGPoint) cellCooridnate;
 @end
 
 @interface WordPuzzleView : UIView
