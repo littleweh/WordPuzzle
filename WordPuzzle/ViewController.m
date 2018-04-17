@@ -82,6 +82,14 @@
                                                   object:nil];
 }
 
+-(void) showWordLimitAlertWithMessage: (NSString *) message {
+    UIAlertController *alert = [UIAlertController alertControllerWithTitle:@"Word Number Limit" message:message preferredStyle:UIAlertControllerStyleAlert];
+    UIAlertAction *okAction = [UIAlertAction actionWithTitle:@"OK" style:UIAlertActionStyleDefault handler:^(UIAlertAction * _Nonnull action) {
+    }];
+    [alert addAction:okAction];
+    [self presentViewController:alert animated:YES completion:nil];
+}
+
 
 -(BOOL) textField:(UITextField *)textField shouldChangeCharactersInRange:(NSRange)range replacementString:(NSString *)string {
     // ToDo: word number limit for Chinese
@@ -89,7 +97,10 @@
     NSInteger maxNumberOfWords = 1;
     
     if (countOfWords > maxNumberOfWords) {
-        // ToDo: show alert
+        [self showWordLimitAlertWithMessage:@"one character only"];
+        return NO;
+    } else if ([string isEqualToString:@" "]) {
+        [self showWordLimitAlertWithMessage:@"space not allowed"];
         return NO;
     } else {
         return YES;
@@ -97,7 +108,7 @@
 }
 -(BOOL)textFieldShouldReturn:(UITextField *)textField {
     if ([textField.text length] == 0) {
-        // ToDo: show alert, back to the textField
+        [self showWordLimitAlertWithMessage:@"please input one character"];
         return NO;
     } else {
         self.words2DArray[(NSInteger) self.wordPositionInModel.x][(NSInteger) self.wordPositionInModel.y] = textField.text;
