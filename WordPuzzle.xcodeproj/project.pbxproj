@@ -84,13 +84,9 @@
 		7974C78A207F6ACD008A533D /* WordPuzzle */ = {
 			isa = PBXGroup;
 			children = (
-				7974C78B207F6ACD008A533D /* AppDelegate.h */,
-				7974C78C207F6ACD008A533D /* AppDelegate.m */,
+				799B8DF42085A75100579BA3 /* Supported files */,
 				7974C78E207F6ACD008A533D /* ViewController.h */,
 				7974C78F207F6ACD008A533D /* ViewController.m */,
-				7974C791207F6ACD008A533D /* Main.storyboard */,
-				7974C794207F6ACD008A533D /* Assets.xcassets */,
-				7974C796207F6ACD008A533D /* LaunchScreen.storyboard */,
 				7974C799207F6ACD008A533D /* Info.plist */,
 				7974C79A207F6ACD008A533D /* main.m */,
 				797EAF1020804401008E7720 /* View */,
@@ -114,6 +110,18 @@
 				797EAF12208048C6008E7720 /* WordPuzzleView.m */,
 			);
 			path = View;
+			sourceTree = "<group>";
+		};
+		799B8DF42085A75100579BA3 /* Supported files */ = {
+			isa = PBXGroup;
+			children = (
+				7974C78B207F6ACD008A533D /* AppDelegate.h */,
+				7974C78C207F6ACD008A533D /* AppDelegate.m */,
+				7974C791207F6ACD008A533D /* Main.storyboard */,
+				7974C794207F6ACD008A533D /* Assets.xcassets */,
+				7974C796207F6ACD008A533D /* LaunchScreen.storyboard */,
+			);
+			path = "Supported files";
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */

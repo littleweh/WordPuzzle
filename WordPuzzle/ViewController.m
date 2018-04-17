@@ -47,11 +47,23 @@
     [self addTapGestureRecognizerToGameView];
     
 }
-// MARK: gestureRecognizer
 -(void) addTapGestureRecognizerToGameView {
     UITapGestureRecognizer *tapGestureRecognizer = [[UITapGestureRecognizer alloc] initWithTarget:self.gameView action:@selector(calculateTouchPointInWhichCellByHandlingGestureRecognizerBy:)];
     tapGestureRecognizer.numberOfTapsRequired = 2;
     [self.gameView addGestureRecognizer:tapGestureRecognizer];
+}
+
+-(void) showWordLimitAlertWithMessage: (NSString *) message {
+    UIAlertController *alert = [UIAlertController alertControllerWithTitle:@"Word Number Limit"
+                                                                   message:message
+                                                            preferredStyle:UIAlertControllerStyleAlert];
+    UIAlertAction *okAction = [UIAlertAction actionWithTitle:@"OK"
+                                                       style:UIAlertActionStyleDefault
+                                                     handler:^(UIAlertAction * _Nonnull action) {
+    }];
+
+    [alert addAction:okAction];
+    [self presentViewController:alert animated:YES completion:nil];
 }
 
 // MARK: UITextField delegate func implementation
@@ -82,15 +94,6 @@
                                                   object:nil];
 }
 
--(void) showWordLimitAlertWithMessage: (NSString *) message {
-    UIAlertController *alert = [UIAlertController alertControllerWithTitle:@"Word Number Limit" message:message preferredStyle:UIAlertControllerStyleAlert];
-    UIAlertAction *okAction = [UIAlertAction actionWithTitle:@"OK" style:UIAlertActionStyleDefault handler:^(UIAlertAction * _Nonnull action) {
-    }];
-    [alert addAction:okAction];
-    [self presentViewController:alert animated:YES completion:nil];
-}
-
-
 -(BOOL) textField:(UITextField *)textField shouldChangeCharactersInRange:(NSRange)range replacementString:(NSString *)string {
     // ToDo: word number limit for Chinese
     NSInteger countOfWords = [textField.text length] + [string length] - range.length;
@@ -111,7 +114,9 @@
         [self showWordLimitAlertWithMessage:@"please input one character"];
         return NO;
     } else {
-        self.words2DArray[(NSInteger) self.wordPositionInModel.x][(NSInteger) self.wordPositionInModel.y] = textField.text;
+        NSInteger row = (NSInteger) self.wordPositionInModel.x;
+        NSInteger column = (NSInteger) self.wordPositionInModel.y;
+        self.words2DArray[row][column] = textField.text;
         textField.text = nil;
         [textField resignFirstResponder];
         [textField setHidden:YES];
@@ -125,13 +130,14 @@ CGFloat deltaY;
 // MARK: keyboard notification observer selector func
 -(void) keyboardWillShow:(NSNotification *) notification {
     CGSize keyboardSize = [[[notification userInfo]objectForKey:UIKeyboardFrameBeginUserInfoKey]CGRectValue].size;
-    CGRect myTextFieldFrameInView = [self.view convertRect:self.myTextField.frame fromView:self.gameView];
+    CGRect myTextFieldFrameInView = [self.view convertRect:self.myTextField.frame
+                                                  fromView:self.gameView];
     CGFloat padding = 20;
     
-    deltaY = self.view.frame.size.height - keyboardSize.height - padding - myTextFieldFrameInView.size.height - myTextFieldFrameInView.origin.y;
+    deltaY = self.view.frame.size.height - keyboardSize.height - padding
+            - myTextFieldFrameInView.size.height - myTextFieldFrameInView.origin.y;
 
     if (deltaY < 0 ) {
-        
         [UIView beginAnimations:nil context:NULL];
         [UIView setAnimationDuration:[notification.userInfo[UIKeyboardAnimationDurationUserInfoKey] doubleValue]];
         [UIView setAnimationCurve:[notification.userInfo[UIKeyboardAnimationCurveUserInfoKey] integerValue]];
@@ -151,11 +157,14 @@ CGFloat deltaY;
     NSTimeInterval duration = [[[notification userInfo] objectForKey:UIKeyboardAnimationDurationUserInfoKey]doubleValue];
     NSUInteger curve = [[[notification userInfo] objectForKey:UIKeyboardAnimationCurveUserInfoKey] unsignedIntegerValue];
     if (deltaY < 0) {
-        [UIView animateWithDuration:duration delay:0 options:curve animations:^{
-            CGRect f = self.gameView.frame;
-            f.origin.y -= deltaY;
-            self.gameView.frame = f;
-        } completion:^(BOOL finished){}];
+        [UIView animateWithDuration:duration
+                              delay:0
+                            options:curve
+                         animations:^{
+                             CGRect f = self.gameView.frame;
+                             f.origin.y -= deltaY;
+                             self.gameView.frame = f;
+                         } completion:^(BOOL finished){}];
     }
 }
 
@@ -170,12 +179,14 @@ CGFloat deltaY;
                              cellOrigin.y - borderWidth,
                              cellLength + 2 * borderWidth,
                              cellLength + 2 * borderWidth);
-    self.wordPositionInModel = cellCooridnate;
-    self.myTextField.frame = rect;
-    self.myTextField.placeholder = self.words2DArray[(NSInteger) cellCooridnate.x][(NSInteger) cellCooridnate.y];
-    
-    [self.myTextField setHidden:NO];
-    [self.myTextField becomeFirstResponder];
+    if ([self.myTextField isHidden]) {
+        self.wordPositionInModel = cellCooridnate;
+        self.myTextField.frame = rect;
+        self.myTextField.placeholder = self.words2DArray[(NSInteger) cellCooridnate.x][(NSInteger) cellCooridnate.y];
+        
+        [self.myTextField setHidden:NO];
+        [self.myTextField becomeFirstResponder];
+    }
     
 }
 
@@ -205,6 +216,7 @@ CGFloat deltaY;
     self.myTextField.textColor = [UIColor blackColor];
     self.myTextField.returnKeyType = UIReturnKeyDone;
     self.myTextField.clearButtonMode = UITextFieldViewModeWhileEditing;
+    [self.myTextField setHidden:YES];
 }
 
 -(void) setupGameView {
