@@ -6,9 +6,9 @@
 //  Copyright © 2018 Ada Kao. All rights reserved.
 //
 
-#import "WordPuzzleView.h"
+#import "ASWordPuzzleView.h"
 
-@interface WordPuzzleView()
+@interface ASWordPuzzleView()
 @property (assign, nonatomic) CGFloat tableLength;
 @property (assign, nonatomic) CGPoint tableOrigin;
 @property (assign, nonatomic) NSInteger rowNumber;
@@ -17,7 +17,7 @@
 @property (assign, nonatomic) double fontSizeFromCellSize;
 @end
 
-@implementation WordPuzzleView
+@implementation ASWordPuzzleView
 
 -(void)layoutSubviews {
     [super layoutSubviews];
@@ -91,16 +91,16 @@
 
 -(void) calculateTouchPointInWhichCellByHandlingGestureRecognizerBy: (UITapGestureRecognizer *) tapRecognizer {
     CGPoint touchPoint = [tapRecognizer locationInView:self];
-    if ([self.delegate respondsToSelector:@selector(textFieldPositionInfoWithOrigin:WithCellLength:AndCellModelCoordinate:)]) {
+    if ([self.delegate respondsToSelector:@selector(wordPuzzleViewWillReturnTextFieldPositionWithOrigin:cellLength:cellModelCoordinate:)]) {
         NSInteger x = ( touchPoint.x - self.tableOrigin.x ) / self.cellLength;
         NSInteger y = ( touchPoint.y - self.tableOrigin.y ) / self.cellLength;
         
-        if (x >= 0 && (long)x < self.rowNumber && y >=0 && (long)y < self.rowNumber) {
+        if (x >= 0 && x < self.rowNumber && y >= 0 && y < self.rowNumber) {
             CGPoint cellOrigin = CGPointMake(x * self.cellLength + self.tableOrigin.x,
                                              y *self.cellLength + self.tableOrigin.y);
-            [self.delegate textFieldPositionInfoWithOrigin: cellOrigin
-                                            WithCellLength: self.cellLength
-                                    AndCellModelCoordinate: CGPointMake(y, x)];
+            [self.delegate wordPuzzleViewWillReturnTextFieldPositionWithOrigin: cellOrigin
+                                                cellLength: self.cellLength
+                                       cellModelCoordinate: CGPointMake(y, x)];
         }
     }
 }

@@ -7,17 +7,19 @@
 //
 
 #import "ViewController.h"
-#import "WordPuzzleView.h"
+#import "ASWordPuzzleView.h"
 
 @interface ViewController ()
-@property (assign, nonatomic, readwrite) int wordBoxSize;
+@property (assign, nonatomic, readwrite) NSInteger wordBoxSize;
 @property (strong, nonatomic, readwrite) NSMutableArray* words2DArray;
-@property (strong, nonatomic, readwrite) WordPuzzleView *gameView;
+@property (strong, nonatomic, readwrite) ASWordPuzzleView *gameView;
 @property (strong, nonatomic, readwrite) UITextField * myTextField;
 @property (assign, nonatomic, readwrite) CGPoint wordPositionInModel;
 @end
 
 @implementation ViewController
+
+// ToDo: add a tapGestureRecognizer for cancel(single tap on screen)
 
 - (void)viewDidLoad {
     [super viewDidLoad];
@@ -31,10 +33,10 @@
     for (int i =0; i< self.wordBoxSize * self.wordBoxSize; i++) {
         numbers[i] = [[NSString alloc]initWithFormat:@"%i", i+1];
     }
-    self.words2DArray = [self setWords2DArrayWithSquareLength:self.wordBoxSize Words:numbers];
+    self.words2DArray = [self setWords2DArrayWithSquareLength: self.wordBoxSize Words:numbers];
     
     // UI: gameView & textField
-    self.gameView = [[WordPuzzleView alloc] initWithFrame:CGRectMake(30, 30, 300, 300)];
+    self.gameView = [[ASWordPuzzleView alloc] initWithFrame:CGRectMake(30, 30, 300, 300)];
     [self.view addSubview:self.gameView];
     [self setupGameView];
     [self.gameView setDelegate:self];
@@ -169,11 +171,11 @@ CGFloat deltaY;
 }
 
 // MARK: WordPuzzleView delegate func implementation
-- (NSMutableArray *)modelForWordPuzzleView:(WordPuzzleView *)myPuzzleView {
+- (NSMutableArray *)modelForWordPuzzleView:(ASWordPuzzleView *)myPuzzleView {
     return self.words2DArray;
 }
 
--(void) textFieldPositionInfoWithOrigin: (CGPoint) cellOrigin WithCellLength: (CGFloat) cellLength AndCellModelCoordinate: (CGPoint) cellCooridnate {
+-(void) wordPuzzleViewWillReturnTextFieldPositionWithOrigin: (CGPoint) cellOrigin cellLength: (CGFloat) cellLength cellModelCoordinate: (CGPoint) cellCooridnate {
     CGFloat borderWidth = 0.0;
     CGRect rect = CGRectMake(cellOrigin.x - borderWidth,
                              cellOrigin.y - borderWidth,
@@ -191,7 +193,7 @@ CGFloat deltaY;
 }
 
 // MARK: Model
--(NSMutableArray*) setWords2DArrayWithSquareLength: (int) boxLength Words: (NSMutableArray*) materials {
+-(NSMutableArray*) setWords2DArrayWithSquareLength: (NSInteger) boxLength Words: (NSMutableArray*) materials {
     NSMutableArray *words2DArray = [NSMutableArray array];
     NSInteger index = 0;
     for (int row = 0; row < boxLength; row++) {
