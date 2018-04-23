@@ -14,7 +14,7 @@
 		7974C798207F6ACD008A533D /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 7974C796207F6ACD008A533D /* LaunchScreen.storyboard */; };
 		7974C79B207F6ACD008A533D /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 7974C79A207F6ACD008A533D /* main.m */; };
 		7974C7A5207F6ACD008A533D /* WordPuzzleTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 7974C7A4207F6ACD008A533D /* WordPuzzleTests.m */; };
-		797EAF13208048C6008E7720 /* WordPuzzleView.m in Sources */ = {isa = PBXBuildFile; fileRef = 797EAF12208048C6008E7720 /* WordPuzzleView.m */; };
+		797EAF13208048C6008E7720 /* ASWordPuzzleView.m in Sources */ = {isa = PBXBuildFile; fileRef = 797EAF12208048C6008E7720 /* ASWordPuzzleView.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -41,8 +41,8 @@
 		7974C7A0207F6ACD008A533D /* WordPuzzleTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = WordPuzzleTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		7974C7A4207F6ACD008A533D /* WordPuzzleTests.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = WordPuzzleTests.m; sourceTree = "<group>"; };
 		7974C7A6207F6ACD008A533D /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
-		797EAF11208048C6008E7720 /* WordPuzzleView.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = WordPuzzleView.h; sourceTree = "<group>"; };
-		797EAF12208048C6008E7720 /* WordPuzzleView.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = WordPuzzleView.m; sourceTree = "<group>"; };
+		797EAF11208048C6008E7720 /* ASWordPuzzleView.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ASWordPuzzleView.h; sourceTree = "<group>"; };
+		797EAF12208048C6008E7720 /* ASWordPuzzleView.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = ASWordPuzzleView.m; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -106,8 +106,8 @@
 		797EAF1020804401008E7720 /* View */ = {
 			isa = PBXGroup;
 			children = (
-				797EAF11208048C6008E7720 /* WordPuzzleView.h */,
-				797EAF12208048C6008E7720 /* WordPuzzleView.m */,
+				797EAF11208048C6008E7720 /* ASWordPuzzleView.h */,
+				797EAF12208048C6008E7720 /* ASWordPuzzleView.m */,
 			);
 			path = View;
 			sourceTree = "<group>";
@@ -228,7 +228,7 @@
 			files = (
 				7974C790207F6ACD008A533D /* ViewController.m in Sources */,
 				7974C79B207F6ACD008A533D /* main.m in Sources */,
-				797EAF13208048C6008E7720 /* WordPuzzleView.m in Sources */,
+				797EAF13208048C6008E7720 /* ASWordPuzzleView.m in Sources */,
 				7974C78D207F6ACD008A533D /* AppDelegate.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
